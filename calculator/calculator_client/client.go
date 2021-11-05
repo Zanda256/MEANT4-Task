@@ -7,8 +7,11 @@ import (
 	"log"
 
 	pb "github.com/Zanda256/MEANT4-Task/calculator/calc_proto"
+	"github.com/Zanda256/MEANT4-Task/cli"
 	"google.golang.org/grpc"
 )
+
+var expectedType = "integers"
 
 func main() {
 	fmt.Println("grpc client here.")
@@ -18,7 +21,11 @@ func main() {
 		log.Fatalf("client failed to dial rpc %+v\n", err)
 	}
 	facClnt := pb.NewFactorialClient(conn)
-	integers := []int64{9920016200, 48, 100000, 500000, 32, 72, 5}
+
+	integers, err := cli.GetUserInput(&expectedType)
+	if err != nil {
+		log.Fatalf("error: %+v", err)
+	}
 
 	streamResults(facClnt, integers)
 }
