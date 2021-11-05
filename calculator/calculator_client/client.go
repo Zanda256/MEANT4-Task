@@ -18,7 +18,7 @@ func main() {
 		log.Fatalf("client failed to dial rpc %+v\n", err)
 	}
 	facClnt := pb.NewFactorialClient(conn)
-	integers := []int64{99, 200, 16, 20, 48, 63, 89, 32, 72, 5}
+	integers := []int64{9920016200, 48, 100000, 500000, 32, 72, 5}
 
 	streamResults(facClnt, integers)
 }
@@ -38,7 +38,7 @@ func streamResults(fc pb.FactorialClient, arr []int64) {
 			break
 		}
 		if err != nil {
-			log.Fatal("error while reading stream %+v", err)
+			log.Fatalf("error while reading stream %+v", err)
 		}
 		fmt.Printf("The factorial of %+v is %+v\n", msg.GetInputNumber(), msg.GetFactorialResult())
 	}
