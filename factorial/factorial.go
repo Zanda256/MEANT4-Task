@@ -55,7 +55,7 @@ func veryLargeFactorial(x float64) string {
 			break
 		}
 		wg.Add(1)
-		go numberOfDecimalDigits(arr[k], arr[k+1], ch1)
+		go LogFactorial(arr[k], arr[k+1], ch1)
 	}
 
 	wg.Wait()
@@ -71,7 +71,7 @@ func veryLargeFactorial(x float64) string {
 	return finalStr.String()
 }
 
-func numberOfDecimalDigits(x float64, y float64, c chan float64) {
+func LogFactorial(x float64, y float64, c chan float64) {
 	defer wg.Done()
 	var dec float64
 	for i := x; i > y; i-- {

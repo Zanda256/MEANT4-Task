@@ -7,7 +7,7 @@ import (
 )
 
 func GetUserInput(typSpecifier *string) ([]int64, error) {
-	flag.StringVar(typSpecifier, "inputs", "", "Usage: grpcfactorial --inputs integers 16 464 100")
+	flag.StringVar(typSpecifier, "inputs", "", "Usage: grpcfactorial --inputs integers 16 464 100 ...")
 	flag.Parse()
 	lst := flag.Args()
 	if len(lst) == 0 {
