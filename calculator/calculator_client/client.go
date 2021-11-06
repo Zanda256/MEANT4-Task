@@ -20,6 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("client failed to dial rpc %+v\n", err)
 	}
+	defer conn.Close()
 	facClnt := pb.NewFactorialClient(conn)
 
 	integers, err := cli.GetUserInput(&expectedType)

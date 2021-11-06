@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"google.golang.org/grpc"
 
@@ -35,7 +38,7 @@ func (s *server) Calculate(req *pb.CalculateRequest, stream pb.Factorial_Calcula
 func main() {
 	fmt.Println("factorial server is up.")
 
-	lis, err := net.Listen("tcp", "0.0.0.0:50051")
+	lis, err := net.Listen("tcp", "localhost:50051")
 	if err != nil {
 		fmt.Printf("server failed to listen on tcp port 50051 : %+v\n", err)
 	}
@@ -46,4 +49,11 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+	<-signalChan
+	fmt.Println("Recieved stop signal. Exiting gracefully.")
+	s.Stop()
+
 }
