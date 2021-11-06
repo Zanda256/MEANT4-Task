@@ -1,7 +1,7 @@
 .PHONY : cli factorial clean
 
 grpcfactorial: server client
-	(./serverbin)
+	./serverbin
 
 server: factorial
 	go build -o serverbin calculator/calculator_server/server.go 

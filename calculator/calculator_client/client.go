@@ -16,7 +16,7 @@ var expectedType = "integers"
 func main() {
 	fmt.Println("grpc client here.")
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:5100", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("client failed to dial rpc %+v\n", err)
 	}

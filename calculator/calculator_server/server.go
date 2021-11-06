@@ -38,9 +38,9 @@ func (s *server) Calculate(req *pb.CalculateRequest, stream pb.Factorial_Calcula
 func main() {
 	fmt.Println("factorial server is up.")
 
-	lis, err := net.Listen("tcp", "localhost:50051")
+	lis, err := net.Listen("tcp", "localhost:5100")
 	if err != nil {
-		fmt.Printf("server failed to listen on tcp port 50051 : %+v\n", err)
+		fmt.Printf("server failed to listen on tcp port 5100 : %+v\n", err)
 	}
 	s := grpc.NewServer()
 	pb.RegisterFactorialServer(s, &server{})
@@ -51,8 +51,14 @@ func main() {
 	}
 
 	signalChan := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-	<-signalChan
+	go func() {
+		sig := <-signalChan
+		fmt.Println()
+		fmt.Println(sig)
+		done <- true
+	}()
 	fmt.Println("Recieved stop signal. Exiting gracefully.")
 	s.Stop()
 
