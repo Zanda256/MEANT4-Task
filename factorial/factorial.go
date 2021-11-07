@@ -2,30 +2,34 @@ package factorial
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"math/big"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
 )
 
-type Computer struct {
-	prec int
-}
+type Computer struct{}
 
-func NewComputer(p int) *Computer {
-	if p == 0 {
-		return &Computer{
-			prec: 15,
-		}
-	}
-	return &Computer{prec: p}
+func NewComputer() *Computer {
+	return &Computer{}
 }
 
 var (
-	prec = 15
 	wg   sync.WaitGroup
+	prec = setPrecision()
 )
+
+func setPrecision() int {
+	p, err := strconv.Atoi(os.Getenv("FLOAT_PRECISION"))
+	if err != nil {
+		log.Printf("can not parse environment variable FLOAT_PRECISION.\n Using default of 15.\n")
+		p = 15
+	}
+	return p
+}
 
 func (c *Computer) Compute(v int64) string {
 	f := float64(v)
@@ -35,13 +39,14 @@ func (c *Computer) Compute(v int64) string {
 		return strconv.Itoa(int(a))
 	case 10 < f && f <= 170:
 		a := recursiveFact(f)
-		return strconv.FormatFloat(a, 'g', 15, 64)
+		return strconv.FormatFloat(a, 'g', prec, 64)
 	case 170 < f && f <= 1000000:
 		return mediumFactorial(v)
-	case f > 1000000:
+	case f > 1000000 && f <= 30000000000:
 		return veryLargeFactorial(f)
+	default:
+		return stirlingsApproximation(f)
 	}
-	return ""
 }
 
 func veryLargeFactorial(x float64) string {
@@ -64,6 +69,9 @@ func veryLargeFactorial(x float64) string {
 	for v := range ch1 {
 		sum += v
 	}
+	finalFact := new(big.Float)
+	finalFact.SetFloat64(sum)
+	finalFact.Mul(finalFact, big.NewFloat(math.Log10(x)))
 	totalstr := strconv.FormatFloat((sum), 'g', 15, 64)
 
 	finalStr.WriteString(totalstr)
@@ -71,6 +79,7 @@ func veryLargeFactorial(x float64) string {
 	return finalStr.String()
 }
 
+//Calculate the log of n!
 func LogFactorial(x float64, y float64, c chan float64) {
 	defer wg.Done()
 	var dec float64
@@ -80,6 +89,7 @@ func LogFactorial(x float64, y float64, c chan float64) {
 	c <- dec
 }
 
+//split the number into 10 intervals to leverage concurrent calculate factorial of each interval
 func splitTask(n float64) []float64 {
 	gap := n / 10
 	arr := make([]float64, 0)
@@ -89,6 +99,7 @@ func splitTask(n float64) []float64 {
 	return arr
 }
 
+//Calculate the factorial of a moderately large number
 func mediumFactorial(d int64) string {
 	var fact = new(big.Int)
 	verybig := fact.MulRange(1, d)
@@ -97,6 +108,7 @@ func mediumFactorial(d int64) string {
 	return f.Text('g', prec)
 }
 
+//use recursion to calculate factorial of small numbers.
 func recursiveFact(x float64) float64 {
 	if x == 0 {
 		return 1
@@ -104,30 +116,12 @@ func recursiveFact(x float64) float64 {
 	return x * recursiveFact(x-1)
 }
 
-// func main() {
+func stirlingsApproximation(x float64) string {
+	//stirling approx : lnN! = N*lnN - N
+	exponentStr := "2.7182818284^"
+	lnXFact := ((x * math.Log(x)) - x)
+	bLnXFact := big.NewFloat(lnXFact).Text('g', 15)
 
-// 	// cm := &Computer{}
-// 	//b := veryLargeFactorial(900000)
-// 	//fmt.Println(math.MaxInt64)
-// 	// var d float64
-// 	// for i := 100; i > 90; i-- {
-// 	// 	d += math.Log10(float64(i))
-// 	// }
-// 	// fmt.Printf("Sum 100-90 = %+v\n", d)
-// 	// fmt.Println()
-// 	// fmt.Printf("Log 100 = %+v\n", math.Log10(100))
-// 	// fmt.Printf("Log 60 = %+v\n", math.Log10(60))
-// 	// fmt.Printf("Log 10 = %+v\n", math.Log10(10))
-// 	var x float64 = 65000000000
-// 	fmt.Println(x)
-// 	b := new(big.Float)
-// 	fmt.Println(b.SetFloat64(math.MaxInt64 * math.Log10(math.MaxInt64)).String())
-// 	st := veryLargeFactorial(10000000000)
-// 	fmt.Println(st)
-// 	//fmt.Println("log is : ", numberOfDecimalDigits(b))
+	return exponentStr + bLnXFact
 
-// 	// fmt.Println(math.MaxInt64)
-// 	// fmt.Println(verybig)
-// 	// a := recursiveFact(10)
-// 	// fmt.Println(int64(a))
-// }
+}

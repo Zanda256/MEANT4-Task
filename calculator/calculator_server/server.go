@@ -8,7 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"google.golang.org/grpc/status"
+
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 
 	pb "github.com/Zanda256/MEANT4-Task/calculator/calc_proto"
 	"github.com/Zanda256/MEANT4-Task/factorial"
@@ -24,8 +27,16 @@ type factorizer interface {
 
 func (s *server) Calculate(req *pb.CalculateRequest, stream pb.Factorial_CalculateServer) error {
 	lst := req.GetNumbers()
-	var fact factorizer = factorial.NewComputer(5)
+
+	var fact factorizer = factorial.NewComputer()
+
 	for _, v := range lst {
+		if v < 0 {
+			return status.Errorf(
+				codes.InvalidArgument,
+				fmt.Sprintf("Recieved a negative number %+v. Accepts only positive numbers.", v),
+			)
+		}
 		str := fact.Compute(v)
 		stream.Send(&pb.CalculateResult{
 			InputNumber:     v,
@@ -53,6 +64,7 @@ func main() {
 	signalChan := make(chan os.Signal, 1)
 	done := make(chan bool, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
 	go func() {
 		sig := <-signalChan
 		fmt.Println()

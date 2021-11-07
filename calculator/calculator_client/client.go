@@ -37,7 +37,7 @@ func streamResults(fc pb.FactorialClient, arr []int64) {
 	}
 	resStream, err := fc.Calculate(context.Background(), req)
 	if err != nil {
-		log.Fatal("error while calling calculate")
+		log.Fatalf("error while calling calculate\n%+v", err)
 	}
 	for {
 		msg, err := resStream.Recv()
