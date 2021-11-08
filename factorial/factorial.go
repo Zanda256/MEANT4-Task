@@ -68,8 +68,10 @@ func recursiveFact(x float64) float64 {
 func stirlingsApproximation(x float64) string {
 	//stirling approx : lnN! = N*lnN - N
 	lnXFact := ((x * math.Log(x)) - x)
-	bigLnXFact := big.NewFloat(lnXFact).Text('g', prec)
+	bs := new(big.Float)
+	bigLnXFact := bs.SetFloat64(lnXFact)
+	bigLnXFactStr := bigLnXFact.Text('g', prec)
 
-	return bigLnXFact
+	return bigLnXFactStr
 
 }

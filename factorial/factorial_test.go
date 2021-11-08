@@ -112,26 +112,25 @@ func TestStirlingsApproximation(t *testing.T) {
 	}{
 		{
 			num:      7000000000,
-			expected: 0,
+			expected: ((float64(7000000000) * math.Log(float64(7000000000))) - float64(7000000000)),
 		},
 		{
 			num:      10000,
-			expected: 0,
+			expected: ((float64(10000) * math.Log(float64(10000))) - float64(10000)),
 		},
 		{
 			num:      1000000,
-			expected: 0,
+			expected: ((float64(1000000) * math.Log(float64(1000000))) - float64(1000000)),
 		},
 	}
 	for _, tC := range testCases {
-		tC.expected = ((float64(tC.num) * math.Log(float64(tC.num))) - float64(tC.num))
 		actual := stirlingsApproximation(float64(tC.num))
 
 		bigExpected := new(big.Float).SetPrec(uint(prec)).SetFloat64(tC.expected)
 
 		bigActual, ok := new(big.Float).SetPrec(uint(prec)).SetString(actual)
 		if !ok {
-			t.Errorf("could not parse actual factorial string %+v: %+v", tC.num, actual)
+			t.Errorf("could not parse actual Nln(N) - N  string %+v: %+v", tC.num, actual)
 		}
 
 		diff := bigActual.Sub(bigActual, bigExpected)
@@ -139,7 +138,7 @@ func TestStirlingsApproximation(t *testing.T) {
 
 		acceptedError := new(big.Float).SetPrec(uint(prec)).SetFloat64(float64(math.Pow10(-prec)))
 		if less := diffAbs.Cmp(acceptedError); less > 0 {
-			t.Errorf("expected factorial of %+v to be %+v, got %+v", tC.num, tC.expected, actual)
+			t.Errorf("expected Nln(N) - N of %+v to be %+v, got %+v", tC.num, tC.expected, actual)
 		}
 	}
 
