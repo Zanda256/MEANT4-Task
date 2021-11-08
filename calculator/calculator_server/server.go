@@ -67,8 +67,7 @@ func main() {
 
 	go func() {
 		sig := <-signalChan
-		fmt.Println()
-		fmt.Println(sig)
+		fmt.Printf("\n%+v", sig)
 		done <- true
 	}()
 	fmt.Println("Recieved stop signal. Exiting gracefully.")

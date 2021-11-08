@@ -1,7 +1,7 @@
 # Using the program
 1. Open the terminal and navigate to the MEANT4-Task directory
 
-2. Run 'make' in the terminal. You should see the following out put
+2. Run `make` in the terminal. You should see the following out put
 ```
 go build factorial/factorial.go
 go build -o serverbin calculator/calculator_server/server.go 
@@ -13,12 +13,9 @@ factorial server is up.
 ```
 3. Optionally, you can build the server and client binaries seperately by running the following commands.
 
-```
-make server
-```
-```
-make client
-```
+`make server`
+
+`make client`
 
 You can then run the server (`./serverbin`) followed by the client (`./grpcfactorial` In a different terminal). The order matters.
 `./serverbin`
