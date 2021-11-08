@@ -20,19 +20,19 @@ make server
 make client
 ```
 
-You can then run the server (./serverbin) followed by the client (./grpcfactorial In a different terminal). The order matters.
-'./serverbin'
-'./grpcfactorial'
+You can then run the server (`./serverbin`) followed by the client (`./grpcfactorial` In a different terminal). The order matters.
+`./serverbin`
+`./grpcfactorial`
 
 4. This will create two binaries named 'serverbin' and 'grpcfactorial' in the project-level directory and 
 run the server on address 127.0.0.1:50051.
 
-5. Open another terminal and run the 'grpcfactorial' binary with the '--inputs' flag set to 'integers' followed by a space-seperated
+5. Open another terminal and run the `grpcfactorial` binary with the `--inputs` flag set to `integers` followed by a space-seperated
 list of the integers whose factorials you want to calculate as shown below.
 ```
 ./grpcfactorial --inputs integers 37 58 10000000000 5 6 7 8 1
 ```
 #Tests
-You can navigate into the directory  ./factorial/ at the terminal and type go test to run tests.
+You can navigate into the directory  `./factorial/` at the terminal and type `go test -v` to run tests.
 Optionally you can run `make test` at the project root directory to run tests.
 
