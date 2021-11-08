@@ -48,6 +48,10 @@ func streamResults(fc pb.FactorialClient, arr []int64) {
 		if err != nil {
 			log.Fatalf("error while reading stream %+v", err)
 		}
-		fmt.Printf("The factorial of %+v is %+v\n", msg.GetInputNumber(), msg.GetFactorialResult())
+		if msg.InputNumber > 1000000 {
+			fmt.Printf("The factorial of %+v is approximately %+v.\n", msg.GetInputNumber(), msg.GetFactorialResult())
+		} else {
+			fmt.Printf("The factorial of %+v is %+v.\n", msg.GetInputNumber(), msg.GetFactorialResult())
+		}
 	}
 }

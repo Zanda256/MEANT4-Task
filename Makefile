@@ -1,4 +1,4 @@
-.PHONY : cli factorial clean
+.PHONY : cli factorial clean test
 
 grpcfactorial: server client
 	./serverbin
@@ -14,6 +14,9 @@ factorial:
 
 cli: 
 	go build cli/inputs.go
+
+test:
+	go test ./factorial/ -v
 
 clean:
 	rm ./serverbin

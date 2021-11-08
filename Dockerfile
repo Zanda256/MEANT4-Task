@@ -22,8 +22,8 @@ EXPOSE 5100
 ENV FLOAT_PRECISION 15
 
 #Compile our app and start the server binary
-RUN make server
-RUN make client
+RUN go build -o serverbin calculator/calculator_server/server.go 
+RUN go build -o grpcfactorial calculator/calculator_client/client.go
 
 # Run app.py when the container launches
 CMD [ "/serverbin" ]
