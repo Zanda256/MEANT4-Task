@@ -70,6 +70,7 @@ func main() {
 		fmt.Printf("\n%+v", sig)
 		done <- true
 	}()
+	<-done
 	fmt.Println("Recieved stop signal. Exiting gracefully.")
 	s.Stop()
 

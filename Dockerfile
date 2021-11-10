@@ -9,7 +9,7 @@ WORKDIR /factorial
 COPY go.mod ./
 COPY go.sum ./
 
-# Install any needed packages specified in requirements.txt
+# Install any needed packages specified in go.mod
 RUN go mod download
 
 #Copy everything in the current folder to the image 
